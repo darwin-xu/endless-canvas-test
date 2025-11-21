@@ -114,6 +114,7 @@ function main() {
     const select = document.getElementById(
         "case-select",
     ) as HTMLSelectElement | null;
+    const pointsList = document.getElementById("points-list");
     if (!app || !select) return;
 
     const rectSummary = (r: Rect) => `(${r.x},${r.y},${r.width},${r.height})`;
@@ -133,8 +134,20 @@ function main() {
     const render = () => {
         const idx = Number(select.value) || 0;
         const test = TEST_CASES[idx];
+        const pathPoints = routeRightToLeft(test.A, test.B);
         app.innerHTML = "";
+        // Build SVG using existing helper (will recompute points internally).
         app.appendChild(createSvgForCase(test));
+
+        // Populate points list
+        if (pointsList) {
+            pointsList.innerHTML = "";
+            pathPoints.forEach((p, i) => {
+                const li = document.createElement("li");
+                li.textContent = `${i}: (${p.x}, ${p.y})`;
+                pointsList.appendChild(li);
+            });
+        }
     };
 
     select.addEventListener("change", render);
