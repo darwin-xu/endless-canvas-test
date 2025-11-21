@@ -1,4 +1,5 @@
-import { Rect, routeRightToLeft } from './router'
+import type { Rect } from './router'
+import { routeRightToLeft } from './router'
 
 interface TestCase {
   name: string
