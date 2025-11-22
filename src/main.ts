@@ -26,6 +26,62 @@ const TEST_CASES: TestCase[] = [
         A: { x: 100, y: 70, width: 100, height: 40 },
         B: { x: 200, y: 10, width: 100, height: 40 },
     },
+    {
+        A: { x: 0, y: 200, width: 120, height: 50 },
+        B: { x: 300, y: 200, width: 120, height: 50 },
+    },
+    {
+        A: { x: 0, y: 0, width: 100, height: 40 },
+        B: { x: 200, y: 300, width: 120, height: 60 },
+    },
+    {
+        A: { x: 200, y: 300, width: 120, height: 60 },
+        B: { x: 0, y: 0, width: 100, height: 40 },
+    },
+    {
+        A: { x: 0, y: 0, width: 160, height: 60 },
+        B: { x: 120, y: 120, width: 160, height: 60 },
+    },
+    {
+        A: { x: 120, y: 120, width: 160, height: 60 },
+        B: { x: 0, y: 0, width: 160, height: 60 },
+    },
+    {
+        A: { x: 0, y: 100, width: 150, height: 50 },
+        B: { x: 120, y: 90, width: 200, height: 50 },
+    },
+    {
+        A: { x: 200, y: 40, width: 140, height: 50 },
+        B: { x: 60, y: 180, width: 120, height: 40 },
+    },
+    {
+        A: { x: 500, y: 50, width: 150, height: 60 },
+        B: { x: 200, y: 200, width: 140, height: 60 },
+    },
+    {
+        A: { x: 100, y: 100, width: 80, height: 40 },
+        B: { x: 160, y: 110, width: 80, height: 40 },
+    },
+    {
+        A: { x: 0, y: 0, width: 150, height: 60 },
+        B: { x: 10, y: 300, width: 150, height: 60 },
+    },
+    {
+        A: { x: 140, y: 20, width: 100, height: 60 },
+        B: { x: 20, y: 20, width: 100, height: 60 },
+    },
+    {
+        A: { x: 140, y: 20, width: 100, height: 60 },
+        B: { x: 20, y: 30, width: 100, height: 60 },
+    },
+    {
+        A: { x: 140, y: 20, width: 100, height: 60 },
+        B: { x: 20, y: 40, width: 100, height: 60 },
+    },
+    {
+        A: { x: 140, y: 20, width: 100, height: 60 },
+        B: { x: 20, y: 10, width: 100, height: 60 },
+    },
 ];
 
 // Basic padding around drawing

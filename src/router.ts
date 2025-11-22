@@ -1,4 +1,3 @@
-// src/router.ts
 export interface Rect {
     x: number;
     y: number;
@@ -11,18 +10,8 @@ export interface Point {
     y: number;
 }
 
-/**
- * Route from A -> B:
- * - from center of A's right edge
- * - to center of B's left edge
- * - orthogonal only
- * - leave/enter horizontally (perpendicular to edges)
- * - try to use vertical gap between rects; otherwise detour outside
- */
 export function routeRightToLeft(A: Rect, B: Rect): Point[] {
-    const points: Point[] = [];
-
-    // 1. Ports
+    // ---- 1. Ports ----
     const S: Point = {
         x: A.x + A.width,
         y: A.y + A.height / 2,
@@ -33,58 +22,97 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
         y: B.y + B.height / 2,
     };
 
-    points.push(S);
+    // Helpful ranges
+    const Aleft = A.x;
+    const Aright = A.x + A.width;
+    const Atop = A.y;
+    const Abottom = A.y + A.height;
 
-    // small step out of A to the right (perpendicular to right edge)
+    const Bleft = B.x;
+    const Bright = B.x + B.width;
+    const Btop = B.y;
+    const Bbottom = B.y + B.height;
+
+    // -------------------------------------------------------
+    // CASE 0 — Simple straight horizontal line (ideal case)
+    // -------------------------------------------------------
+
+    if (S.y === E.y) {
+        const y = S.y;
+        const x1 = Math.min(S.x, E.x);
+        const x2 = Math.max(S.x, E.x);
+        // Treat touching the boundary (>= right or <= left) as non-intersection
+        const hitsA = y > Atop && y < Abottom && !(x2 <= Aleft || x1 >= Aright);
+        const hitsB = y > Btop && y < Bbottom && !(x2 <= Bleft || x1 >= Bright);
+        if (!hitsA && !hitsB) return [S, E];
+    }
+
+    // -------------------------------------------------------
+    // SIMPLE MID CORRIDOR (A fully left of B, vertical offset)
+    // -------------------------------------------------------
+    if (Aright < Bleft && S.y !== E.y) {
+        const midX = (S.x + E.x) / 2;
+        return [S, { x: midX, y: S.y }, { x: midX, y: E.y }, E];
+    }
+
+    // -------------------------------------------------------
+    // CASE 1 — Leave A horizontally (required)
+    // -------------------------------------------------------
     const outX = S.x + 20;
-    points.push({ x: outX, y: S.y });
+    const first = { x: outX, y: S.y };
 
-    const topA = A.y;
-    const bottomA = A.y + A.height;
-    const topB = B.y;
-    const bottomB = B.y + B.height;
-
-    // --- Try vertical corridor (gap) between A and B ---
-    let corridorY: number | null = null;
+    // -------------------------------------------------------
+    // CASE 2 — Try to find a vertical corridor between A and B
+    // -------------------------------------------------------
 
     // A above B
-    if (bottomA + 5 < topB - 5) {
-        corridorY = (bottomA + topB) / 2;
+    if (Abottom + 5 < Btop - 5) {
+        const mid = (Abottom + Btop) / 2;
+        const leftOfB = Bleft - 20;
+
+        return [
+            S,
+            first,
+            { x: outX, y: mid },
+            { x: leftOfB, y: mid },
+            { x: leftOfB, y: E.y },
+            E,
+        ];
     }
 
     // B above A
-    if (bottomB + 5 < topA - 5) {
-        corridorY = (bottomB + topA) / 2;
+    if (Bbottom + 5 < Atop - 5) {
+        const mid = (Bbottom + Atop) / 2;
+        const leftOfB = Bleft - 20;
+
+        return [
+            S,
+            first,
+            { x: outX, y: mid },
+            { x: leftOfB, y: mid },
+            { x: leftOfB, y: E.y },
+            E,
+        ];
     }
 
-    if (corridorY !== null) {
-        // go into vertical gap
-        points.push({ x: outX, y: corridorY });
+    // -------------------------------------------------------
+    // CASE 3 — No corridor; choose safe outer detour
+    // -------------------------------------------------------
 
-        // choose an x left of B for approach
-        const leftOfB = B.x - 20;
-        points.push({ x: leftOfB, y: corridorY });
-
-        // go to B center line
-        points.push({ x: leftOfB, y: E.y });
-
-        // final entry
-        points.push(E);
-        return points;
-    }
-
-    // --- No vertical gap: outer detour ---
-    const rightMax = Math.max(A.x + A.width, B.x + B.width);
+    const rightMax = Math.max(Aright, Bright);
     const detourX = rightMax + 20;
 
-    const bottomMax = Math.max(bottomA, bottomB);
+    const bottomMax = Math.max(Abottom, Bbottom);
     const detourY = bottomMax + 20;
+    const leftOfB = Bleft - 20;
 
-    points.push({ x: detourX, y: S.y });
-    points.push({ x: detourX, y: detourY });
-    points.push({ x: B.x - 20, y: detourY });
-    points.push({ x: B.x - 20, y: E.y });
-    points.push(E);
-
-    return points;
+    return [
+        S,
+        first,
+        { x: detourX, y: S.y },
+        { x: detourX, y: detourY },
+        { x: leftOfB, y: detourY },
+        { x: leftOfB, y: E.y },
+        E,
+    ];
 }
