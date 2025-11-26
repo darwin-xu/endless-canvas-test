@@ -55,4 +55,32 @@ describe("routeRightToLeft", () => {
             { x: 200, y: 30 },
         ]);
     });
+
+    it("Case 5: start inside target (overlap) escape quickly", () => {
+        const A = rect(0, 0, 100, 40);
+        const B = rect(80, 0, 100, 40);
+        const points = routeRightToLeft(A, B);
+        expect(points).toEqual([
+            { x: 100, y: 20 },
+            { x: 120, y: 20 },
+            { x: 120, y: 60 },
+            { x: 60, y: 60 },
+            { x: 60, y: 20 },
+            { x: 80, y: 20 },
+        ]);
+    });
+
+    it("Case 6: overlapping vertically, prefer closer downward detour", () => {
+        const A = rect(0, 120, 150, 80);
+        const B = rect(100, 40, 150, 80);
+        const points = routeRightToLeft(A, B);
+        expect(points).toEqual([
+            { x: 150, y: 160 }, // S
+            { x: 170, y: 160 }, // out from A
+            { x: 170, y: 220 }, // down at outX
+            { x: 80, y: 220 },  // left under both
+            { x: 80, y: 80 },   // up to E.y
+            { x: 100, y: 80 },  // E
+        ]);
+    });
 });

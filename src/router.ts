@@ -96,6 +96,24 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
     }
 
     // -------------------------------------------------------
+    // SPECIAL — Start point lies inside B, escape quickly
+    // -------------------------------------------------------
+    const startInsideB = S.x > Bleft && S.x < Bright && S.y > Btop && S.y < Bbottom;
+    if (startInsideB) {
+        const bottomMaxLocal = Math.max(Abottom, Bbottom);
+        const detourYLocal = bottomMaxLocal + 20;
+        const leftOfBLocal = Bleft - 20;
+        return [
+            S,
+            first,
+            { x: outX, y: detourYLocal },
+            { x: leftOfBLocal, y: detourYLocal },
+            { x: leftOfBLocal, y: E.y },
+            E,
+        ];
+    }
+
+    // -------------------------------------------------------
     // CASE 3 — No corridor; choose safe outer detour
     // -------------------------------------------------------
 
@@ -106,6 +124,20 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
     const detourY = bottomMax + 20;
     const leftOfB = Bleft - 20;
 
+    // Prefer a tighter detour: go down at outX if that vertical segment stays outside B.
+    const canTightDetour = S.y > Bbottom || S.y < Btop; // vertical move at outX won't cross interior of B
+    if (canTightDetour) {
+        return [
+            S,
+            first,
+            { x: outX, y: detourY },
+            { x: leftOfB, y: detourY },
+            { x: leftOfB, y: E.y },
+            E,
+        ];
+    }
+
+    // Fallback: wide outer detour
     return [
         S,
         first,
