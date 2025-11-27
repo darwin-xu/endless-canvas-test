@@ -98,7 +98,8 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
     // -------------------------------------------------------
     // SPECIAL — Start point lies inside B, escape quickly
     // -------------------------------------------------------
-    const startInsideB = S.x > Bleft && S.x < Bright && S.y > Btop && S.y < Bbottom;
+    const startInsideB =
+        S.x > Bleft && S.x < Bright && S.y > Btop && S.y < Bbottom;
     if (startInsideB) {
         const bottomMaxLocal = Math.max(Abottom, Bbottom);
         const detourYLocal = bottomMaxLocal + 20;

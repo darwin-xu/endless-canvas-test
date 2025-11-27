@@ -78,9 +78,9 @@ describe("routeRightToLeft", () => {
             { x: 150, y: 160 }, // S
             { x: 170, y: 160 }, // out from A
             { x: 170, y: 220 }, // down at outX
-            { x: 80, y: 220 },  // left under both
-            { x: 80, y: 80 },   // up to E.y
-            { x: 100, y: 80 },  // E
+            { x: 80, y: 220 }, // left under both
+            { x: 80, y: 80 }, // up to E.y
+            { x: 100, y: 80 }, // E
         ]);
     });
 });
