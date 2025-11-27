@@ -123,17 +123,34 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
 
     const bottomMax = Math.max(Abottom, Bbottom);
     const detourY = bottomMax + 20;
-    const leftOfB = Bleft - 20;
 
-    // Prefer a tighter detour: go down at outX if that vertical segment stays outside B.
-    const canTightDetour = S.y > Bbottom || S.y < Btop; // vertical move at outX won't cross interior of B
+    // Logic for safeLeftX (target X for the return trip)
+    let safeLeftX = Bleft - 20;
+    // Check if vertical segment at safeLeftX (from detourY to E.y) hits A
+    const xInA = safeLeftX > Aleft && safeLeftX < Aright;
+    const yMin = Math.min(detourY, E.y);
+    const yMax = Math.max(detourY, E.y);
+    // Check overlap with A's y-range [Atop, Abottom]
+    const hitsA = xInA && yMax > Atop && yMin < Abottom;
+
+    if (hitsA) {
+        safeLeftX = Math.min(Aleft, Bleft) - 20;
+    }
+
+    // Logic for canTightDetour (dropping down at outX)
+    // It hits B if outX is within B's x-range AND the segment [S.y, detourY] overlaps B.
+    // Since detourY > Bbottom, overlap implies S.y < Bbottom.
+    const outXInB = outX > Bleft && outX < Bright;
+    const verticalHitB = outXInB && S.y < Bbottom;
+    const canTightDetour = !verticalHitB;
+
     if (canTightDetour) {
         return [
             S,
             first,
             { x: outX, y: detourY },
-            { x: leftOfB, y: detourY },
-            { x: leftOfB, y: E.y },
+            { x: safeLeftX, y: detourY },
+            { x: safeLeftX, y: E.y },
             E,
         ];
     }
@@ -144,8 +161,8 @@ export function routeRightToLeft(A: Rect, B: Rect): Point[] {
         first,
         { x: detourX, y: S.y },
         { x: detourX, y: detourY },
-        { x: leftOfB, y: detourY },
-        { x: leftOfB, y: E.y },
+        { x: safeLeftX, y: detourY },
+        { x: safeLeftX, y: E.y },
         E,
     ];
 }

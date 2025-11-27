@@ -53,6 +53,9 @@ const TEST_CASES: TestCase[] = [
     { A: { x: 100, y: 0, width: 100, height: 40 }, B: { x: 0, y: 50, width: 100, height: 40 } },
     { A: { x: 100, y: 0, width: 100, height: 40 }, B: { x: 0, y: 60, width: 100, height: 40 } },
     { A: { x: 0, y: 0, width: 200, height: 120 }, B: { x: 100, y: 100, width: 200, height: 120 } },
+    { note: "New Case 1", A: { x: 0, y: 0, width: 100, height: 40 }, B: { x: 92, y: -26, width: 100, height: 40 } },
+    { note: "New Case 2", A: { x: 0, y: 0, width: 100, height: 40 }, B: { x: 80, y: 30, width: 100, height: 40 } },
+    { A: { x: 0, y: 120, width: 150, height: 80 }, B: { x: 100, y: 40, width: 150, height: 80 } },
 ];
 
 const PADDING = 40;
